@@ -69,6 +69,10 @@ install_bootloader() {
   info "Installing GRUB (hidden menu, no timeout)..."
   sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/; s/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=hidden/' /etc/default/grub
   run grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+  # Also at the fallback path EFI/BOOT/BOOTX64.EFI: some firmware drops or
+  # ignores the NVRAM entry above and only boots a disk from there, giving
+  # "Reboot and Select proper Boot device" once the USB is pulled.
+  run grub-install --target=x86_64-efi --efi-directory=/boot --removable
   regenerate_grub
 }
 
